@@ -254,7 +254,9 @@ const CreateNoteForm = ({
         disabled={createMutation.isPending}
         className="rounded-lg bg-black px-5 py-3 text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        Create Note
+        {createMutation.isPending
+          ? "Creating..."
+          : "Create Note"}
       </button>
     )}
     {editingNote && (
