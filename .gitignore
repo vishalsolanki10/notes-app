@@ -12,3 +12,4 @@ coverage
 .DS_Store
 
 backend/database/*.db
+PROJECT_PROGRESS.md
