@@ -5,6 +5,7 @@ import type { Note } from "../../types/note";
 type Props = {
   search: string;
   tag: string;
+  sort: string;
   setEditingNote: (
     note: Note | null
   ) => void;
@@ -13,13 +14,14 @@ type Props = {
 const NotesList = ({
   search,
   tag,
+  sort,
   setEditingNote,
 }: Props) => {
   const {
     data,
     isLoading,
     isError,
-  } = useNotes(search, tag);
+  } = useNotes(search, tag, sort);
 
   if (isLoading) {
     return (

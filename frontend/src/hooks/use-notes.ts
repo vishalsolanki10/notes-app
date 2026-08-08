@@ -3,16 +3,22 @@ import { getNotes } from "../api/notes-api";
 
 export const useNotes = (
   search: string,
-  tag: string
+  tag: string,
+  sort: string
 ) => {
   return useQuery({
     queryKey: [
       "notes",
       search,
       tag,
+      sort,
     ],
 
     queryFn: () =>
-      getNotes(search, tag),
+      getNotes(
+        search,
+        tag,
+        sort
+      ),
   });
 };

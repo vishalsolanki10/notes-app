@@ -2,7 +2,8 @@ import { api } from "./client";
 
 export const getNotes = async (
   search?: string,
-  tag?: string
+  tag?: string,
+  sort?: string
 ) => {
   const response = await api.get(
     "/notes",
@@ -10,6 +11,7 @@ export const getNotes = async (
       params: {
         search,
         tag,
+        sort,
       },
     }
   );

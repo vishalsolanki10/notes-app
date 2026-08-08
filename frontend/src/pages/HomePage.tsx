@@ -5,14 +5,15 @@ import CreateNoteForm from "../components/notes/CreateNoteForm";
 import { useDebounce } from "../hooks/use-debounce";
 import TagFilter from "../components/notes/TagFilter";
 import SearchBar from "../components/notes/SearchBar";
+import SortFilter from "../components/notes/SortFilter";
 
 import type { Note } from "../types/note";
 
 const HomePage = () => {
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [search, setSearch] = useState("");
-  const [selectedTag, setSelectedTag] =
-  useState("");
+  const [selectedTag, setSelectedTag] = useState("");
+  const [sortBy, setSortBy] =  useState("");
   const debouncedSearch = useDebounce(search);
 
   return (
@@ -35,9 +36,16 @@ const HomePage = () => {
           onChange={setSelectedTag}
         />
       </div>
+      <div className="mt-4">
+        <SortFilter
+          value={sortBy}
+          onChange={setSortBy}
+        />
+      </div>
       <NotesList
         search={debouncedSearch}
         tag={selectedTag}
+        sort={sortBy}
         setEditingNote={setEditingNote}
       />
     </div>
