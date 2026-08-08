@@ -109,6 +109,31 @@ const CreateNoteForm = ({
     debouncedTags,
   ]);
 
+  useEffect(() => {
+  const handleKeyDown = (
+    e: KeyboardEvent
+  ) => {
+    if (
+      e.key === "Escape" &&
+      editingNote
+    ) {
+      setEditingNote(null);
+    }
+  };
+
+  window.addEventListener(
+    "keydown",
+    handleKeyDown
+  );
+
+  return () => {
+    window.removeEventListener(
+      "keydown",
+      handleKeyDown
+    );
+  };
+}, [editingNote, setEditingNote]);
+
   const handleSubmit = (
     e: React.FormEvent<HTMLFormElement>
   ) => {
