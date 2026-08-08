@@ -4,12 +4,9 @@ import type { Note } from "../../types/note";
 import { useUpdateNote } from "../../hooks/use-update-note";
 import { useDebounce } from "../../hooks/use-debounce";
 
-
 type Props = {
   editingNote: Note | null;
-  setEditingNote: (
-    note: Note | null
-  ) => void;
+  setEditingNote: (note: Note | null) => void;
 };
 
 const CreateNoteForm = ({
@@ -22,16 +19,11 @@ const CreateNoteForm = ({
 
   const isInitialLoad = useRef(false);
   const [saveStatus, setSaveStatus] =
-  useState<"idle" | "saving" | "saved">("idle");
+    useState<"idle" | "saving" | "saved">("idle");
 
-  const debouncedTitle =
-    useDebounce(title, 1000);
-
-  const debouncedContent =
-    useDebounce(content, 1000);
-
-  const debouncedTags =
-    useDebounce(tags, 1000);
+  const debouncedTitle = useDebounce(title, 1000);
+  const debouncedContent = useDebounce(content, 1000);
+  const debouncedTags = useDebounce(tags, 1000);
 
   const createMutation = useCreateNote();
   const updateMutation = useUpdateNote();
@@ -110,59 +102,33 @@ const CreateNoteForm = ({
   ]);
 
   useEffect(() => {
-  const handleKeyDown = (
-    e: KeyboardEvent
-  ) => {
-    if (
-      e.key === "Escape" &&
-      editingNote
-    ) {
-      setEditingNote(null);
-    }
-  };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && editingNote) {
+        setEditingNote(null);
+      }
+    };
 
-  window.addEventListener(
-    "keydown",
-    handleKeyDown
-  );
-
-  return () => {
-    window.removeEventListener(
+    window.addEventListener(
       "keydown",
       handleKeyDown
     );
-  };
-}, [editingNote, setEditingNote]);
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
+    };
+  }, [editingNote, setEditingNote]);
 
   const handleSubmit = (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent
   ) => {
     e.preventDefault();
+
     if (editingNote) {
       return;
     }
-    // if (editingNote) {
-    //   updateMutation.mutate({
-    //     id: editingNote.id,
-
-    //     payload: {
-    //       title,
-    //       content,
-    //       tags: tags
-    //         .split(",")
-    //         .map((tag) => tag.trim())
-    //         .filter(Boolean),
-    //     },
-    //   });
-
-    //   setEditingNote(null);
-
-    //   setTitle("");
-    //   setContent("");
-    //   setTags("");
-
-    //   return;
-    // }
 
     if (!title.trim()) {
       return;
@@ -185,32 +151,32 @@ const CreateNoteForm = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="mt-6 rounded-xl bg-white p-6 shadow-md"
+      className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800"
     >
-    <h2 className="mb-6 text-xl font-semibold">
-      {editingNote
-        ? "Edit Note"
-        : "Create New Note"}
-    </h2>
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+        {editingNote
+          ? "Edit Note"
+          : "Create New Note"}
+      </h2>
 
-    {editingNote && (
-      <p className="mb-4 text-sm text-gray-500">
-        {saveStatus === "saving" &&
-          "Saving..."}
+      {editingNote && (
+        <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+          {saveStatus === "saving" &&
+            "Saving..."}
 
-        {saveStatus === "saved" &&
-          "Saved"}
+          {saveStatus === "saved" &&
+            "Saved"}
 
-        {saveStatus === "idle" &&
-          "Editing"}
-      </p>
-    )}
+          {saveStatus === "idle" &&
+            "Editing"}
+        </p>
+      )}
 
       {/* Title */}
       <div className="mb-4">
         <label
           htmlFor="title"
-          className="mb-2 block text-sm font-medium text-gray-700"
+          className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
         >
           Title
         </label>
@@ -223,7 +189,7 @@ const CreateNoteForm = ({
             setTitle(e.target.value)
           }
           placeholder="Enter note title"
-          className="w-full rounded-lg border border-gray-300 p-3 outline-none focus:border-black"
+          className="w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 outline-none placeholder:text-gray-400 focus:border-black dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-300"
         />
       </div>
 
@@ -231,7 +197,7 @@ const CreateNoteForm = ({
       <div className="mb-4">
         <label
           htmlFor="content"
-          className="mb-2 block text-sm font-medium text-gray-700"
+          className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
         >
           Content
         </label>
@@ -244,7 +210,7 @@ const CreateNoteForm = ({
             setContent(e.target.value)
           }
           placeholder="Write your note..."
-          className="w-full rounded-lg border border-gray-300 p-3 outline-none focus:border-black"
+          className="w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 outline-none placeholder:text-gray-400 focus:border-black dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-300"
         />
       </div>
 
@@ -252,7 +218,7 @@ const CreateNoteForm = ({
       <div className="mb-6">
         <label
           htmlFor="tags"
-          className="mb-2 block text-sm font-medium text-gray-700"
+          className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
         >
           Tags
         </label>
@@ -265,34 +231,37 @@ const CreateNoteForm = ({
             setTags(e.target.value)
           }
           placeholder="react, frontend, typescript"
-          className="w-full rounded-lg border border-gray-300 p-3 outline-none focus:border-black"
+          className="w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 outline-none placeholder:text-gray-400 focus:border-black dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-300"
         />
 
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
           Separate multiple tags using commas
         </p>
       </div>
 
-    {!editingNote && (
-      <button
-        type="submit"
-        disabled={createMutation.isPending}
-        className="rounded-lg bg-black px-5 py-3 text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {createMutation.isPending
-          ? "Creating..."
-          : "Create Note"}
-      </button>
-    )}
-    {editingNote && (
-      <button
-        type="button"
-        onClick={() => setEditingNote(null)}
-        className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
-      > Edting Done!
-        Back to Create Mode
-      </button>
-    )}
+      {!editingNote && (
+        <button
+          type="submit"
+          disabled={createMutation.isPending}
+          className="rounded-lg bg-black px-5 py-3 text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-black"
+        >
+          {createMutation.isPending
+            ? "Creating..."
+            : "Create Note"}
+        </button>
+      )}
+
+      {editingNote && (
+        <button
+          type="button"
+          onClick={() => setEditingNote(null)}
+          className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700"
+        >
+          Editing Done!
+          <br />
+          Back to Create Mode
+        </button>
+      )}
     </form>
   );
 };

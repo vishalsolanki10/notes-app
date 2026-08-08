@@ -2,9 +2,7 @@ import { useTags } from "../../hooks/use-tags";
 
 type Props = {
   value: string;
-  onChange: (
-    value: string
-  ) => void;
+  onChange: (value: string) => void;
 };
 
 const TagFilter = ({
@@ -19,7 +17,7 @@ const TagFilter = ({
     <div>
       <label
         htmlFor="tag-filter"
-        className="mb-2 block text-sm font-medium text-gray-700"
+        className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
       >
         Filter By Tag
       </label>
@@ -30,9 +28,9 @@ const TagFilter = ({
         onChange={(e) =>
           onChange(e.target.value)
         }
-        className="w-full rounded-lg border border-gray-300 p-3"
+        className="w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
       >
-        <option value="">
+        <option value="" className="bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100">
           All Tags
         </option>
 
@@ -40,6 +38,7 @@ const TagFilter = ({
           <option
             key={tag.name}
             value={tag.name}
+            className="bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100"
           >
             {tag.name} ({tag.count})
           </option>

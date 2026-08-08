@@ -6,9 +6,7 @@ type Props = {
   search: string;
   tag: string;
   sort: string;
-  setEditingNote: (
-    note: Note | null
-  ) => void;
+  setEditingNote: (note: Note | null) => void;
 };
 
 const NotesList = ({
@@ -25,16 +23,14 @@ const NotesList = ({
 
   if (isLoading) {
     return (
-      <div className="mt-10 rounded-xl border p-8 text-center">
-        <div className="text-3xl animate-pulse">
-          ⏳
-        </div>
+      <div>
+        <div className="mt-4 text-2xl">⏳</div>
 
-        <h3 className="mt-4 text-lg font-semibold">
+        <h3 className="mt-4 text-lg font-semibold dark:text-gray-100">
           Loading notes...
         </h3>
 
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           Please wait while we fetch your notes.
         </p>
       </div>
@@ -43,16 +39,14 @@ const NotesList = ({
 
   if (isError) {
     return (
-      <div className="mt-10 rounded-xl border border-red-200 bg-red-50 p-8 text-center">
-        <div className="text-5xl">
-          ⚠️
-        </div>
+      <div>
+        <div className="mt-4 text-2xl">⚠️</div>
 
-        <h3 className="mt-4 text-lg font-semibold text-red-700">
+        <h3 className="mt-4 text-lg font-semibold text-red-700 dark:text-red-400">
           Failed to load notes
         </h3>
 
-        <p className="mt-2 text-sm text-red-600">
+        <p className="mt-2 text-sm text-red-600 dark:text-red-400">
           Something went wrong while fetching notes.
           Please try again later.
         </p>
@@ -63,31 +57,28 @@ const NotesList = ({
   const notes = data?.data || [];
 
   if (!notes.length) {
-  return (
-      <div className="mt-10 rounded-xl border border-dashed p-8 text-center">
-      <div className="text-5xl">
-          📝
-      </div>
+    return (
+      <div>
+        <div className="mt-4 text-2xl">📝</div>
 
-      <h3 className="mt-4 text-lg font-semibold">
+        <h3 className="mt-4 text-lg font-semibold dark:text-gray-100">
           No notes found
-      </h3>
+        </h3>
 
-      <p className="mt-2 text-sm text-gray-500">
-          Try creating a new note or
-          adjusting your search and filters.
-      </p>
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          Try creating a new note or adjusting your search and filters.
+        </p>
       </div>
-  );
+    );
   }
 
   return (
-    <div className="mt-6 grid gap-4">
-      {notes.map((note: any) => (
+    <div>
+      {notes.map((note: Note) => (
         <NoteCard
-        key={note.id}
-        note={note}
-        setEditingNote={setEditingNote}
+          key={note.id}
+          note={note}
+          setEditingNote={setEditingNote}
         />
       ))}
     </div>

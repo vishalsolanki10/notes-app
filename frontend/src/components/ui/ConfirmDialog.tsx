@@ -16,21 +16,13 @@ const ConfirmDialog = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="confirm-dialog-title"
-        className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg"
-      >
-        <h2
-          id="confirm-dialog-title"
-          className="text-xl font-semibold"
-        >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           {title}
         </h2>
 
-        <p className="mt-3 text-gray-600">
+        <p className="mt-3 text-gray-600 dark:text-gray-300">
           {message}
         </p>
 
@@ -38,7 +30,7 @@ const ConfirmDialog = ({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded border px-4 py-2"
+            className="rounded border border-gray-300 px-4 py-2 text-gray-900 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700"
           >
             Cancel
           </button>
@@ -46,7 +38,7 @@ const ConfirmDialog = ({
           <button
             type="button"
             onClick={onConfirm}
-            className="rounded bg-red-500 px-4 py-2 text-white"
+            className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
           >
             Delete
           </button>
