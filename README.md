@@ -600,6 +600,30 @@ If this application were being developed as a production product, I would consid
 
 ---
 
+## Deployment
+
+### Frontend
+
+The frontend is deployed on Render:
+
+`https://notes-app-frontend-d6b2.onrender.com/`
+
+### Backend
+
+The backend API is deployed on Render:
+
+`https://notes-app-backend-i2dj.onrender.com/api`
+
+### Deployment Notes
+
+- Frontend is deployed as a Render Static Site.
+- Backend is deployed as a Render Web Service.
+- SQLite is used for persistence.
+- The application uses environment variables for the frontend API URL.
+- The Render free tier may put the backend service to sleep after inactivity, so the first request after inactivity may take a little longer.
+- SQLite data is stored on the service filesystem and is not intended as production-grade persistent storage for this deployment.
+
+
 ## Author
 
 Vishal Solanki
