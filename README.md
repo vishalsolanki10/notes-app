@@ -521,6 +521,8 @@ The assignment only requires basic offline detection, so a full offline-first ar
 ### Implemented
 
 * Dark Mode
+* Export all notes as JSON
+* Export all notes as Markdown
 
 ### Considered but Not Implemented
 
@@ -530,7 +532,6 @@ The following bonus features were intentionally left out to keep the implementat
 * Multi-device synchronization
 * Conflict handling
 * Soft delete and restore
-* Export notes
 * Version history
 * E2E testing
 
@@ -583,6 +584,8 @@ If this application were being developed as a production product, I would consid
 * Responsive UI
 * Accessibility improvements
 * Dark mode
+* Export all notes as Markdown
+* Export all notes as JSON
 * Loading states
 * Empty states
 * Error states
@@ -592,7 +595,6 @@ If this application were being developed as a production product, I would consid
 * Authentication
 * Full offline synchronization
 * Note version history
-* Export functionality
 * E2E testing
 * Production deployment and monitoring
 
