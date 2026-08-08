@@ -77,32 +77,48 @@ const NotesList = ({
 
   return (
     <div>
-      <div className="mb-4 flex gap-3">
-        <button
-          type="button"
-          onClick={() => exportNotesAsMarkdown(notes)}
-          disabled={!notes.length}
-          className="rounded-lg bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-200 dark:text-gray-900 dark:hover:bg-white"
-        >
-          Export Markdown
-        </button>
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold">
+            Your Notes
+          </h2>
 
-        <button
-          type="button"
-          onClick={() => exportNotesAsJson(notes)}
-          disabled={!notes.length}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Export JSON
-        </button>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Manage your saved notes.
+          </p>
+        </div>
+
+        <div className="flex gap-2">
+          <div className="mb-4 flex gap-3">
+            <button
+              type="button"
+              onClick={() => exportNotesAsMarkdown(notes)}
+              disabled={!notes.length}
+              className="rounded-lg bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-200 dark:text-gray-900 dark:hover:bg-white"
+            >
+              Export Markdown
+            </button>
+
+            <button
+              type="button"
+              onClick={() => exportNotesAsJson(notes)}
+              disabled={!notes.length}
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Export JSON
+            </button>
+          </div>
+        </div>
       </div>
-      {notes.map((note: Note) => (
-        <NoteCard
-          key={note.id}
-          note={note}
-          setEditingNote={setEditingNote}
-        />
-      ))}
+      <div className="space-y-4">
+        {notes.map((note: Note) => (
+          <NoteCard
+            key={note.id}
+            note={note}
+            setEditingNote={setEditingNote}
+          />
+        ))}
+      </div>
     </div>
   );
 };

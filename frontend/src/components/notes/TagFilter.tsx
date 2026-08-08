@@ -17,9 +17,9 @@ const TagFilter = ({
     <div>
       <label
         htmlFor="tag-filter"
-        className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+        className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300"
       >
-        Filter By Tag
+        Filter by Tag
       </label>
 
       <select
@@ -28,9 +28,9 @@ const TagFilter = ({
         onChange={(e) =>
           onChange(e.target.value)
         }
-        className="w-full rounded-lg border border-gray-300 bg-white p-3 text-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+        className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-slate-500 dark:focus:ring-slate-700"
       >
-        <option value="" className="bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100">
+        <option value="">
           All Tags
         </option>
 
@@ -38,7 +38,6 @@ const TagFilter = ({
           <option
             key={tag.name}
             value={tag.name}
-            className="bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100"
           >
             {tag.name} ({tag.count})
           </option>
