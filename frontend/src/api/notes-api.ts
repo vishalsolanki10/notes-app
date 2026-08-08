@@ -30,3 +30,22 @@ export const deleteNote = async (
 
   return response.data;
 };
+
+export const updateNote = async ({
+  id,
+  payload,
+}: {
+  id: string;
+  payload: {
+    title?: string;
+    content?: string;
+    tags?: string[];
+  };
+}) => {
+  const response = await api.patch(
+    `/notes/${id}`,
+    payload
+  );
+
+  return response.data;
+};

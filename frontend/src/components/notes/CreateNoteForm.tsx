@@ -1,17 +1,66 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import { useCreateNote } from "../../hooks/use-create-note";
+import type { Note } from "../../types/note";
+import { useUpdateNote } from "../../hooks/use-update-note";
 
-const CreateNoteForm = () => {
+type Props = {
+  editingNote: Note | null;
+  setEditingNote: (
+    note: Note | null
+  ) => void;
+};
+
+const CreateNoteForm = ({
+  editingNote,
+  setEditingNote,
+}: Props) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
 
   const createMutation = useCreateNote();
+  const updateMutation = useUpdateNote();
+
+useEffect(() => {
+  if (editingNote) {
+    setTitle(editingNote.title);
+    setContent(editingNote.content);
+    setTags(editingNote.tags.join(", "));
+  } else {
+    setTitle("");
+    setContent("");
+    setTags("");
+  }
+}, [editingNote]);
 
   const handleSubmit = (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
+
+    if (editingNote) {
+      updateMutation.mutate({
+        id: editingNote.id,
+
+        payload: {
+          title,
+          content,
+          tags: tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter(Boolean),
+        },
+      });
+
+      setEditingNote(null);
+
+      setTitle("");
+      setContent("");
+      setTags("");
+
+      return;
+    }
 
     if (!title.trim()) {
       return;
@@ -36,9 +85,11 @@ const CreateNoteForm = () => {
       onSubmit={handleSubmit}
       className="mt-6 rounded-xl bg-white p-6 shadow-md"
     >
-      <h2 className="mb-6 text-xl font-semibold">
-        Create New Note
-      </h2>
+    <h2 className="mb-6 text-xl font-semibold">
+      {editingNote
+        ? "Edit Note"
+        : "Create New Note"}
+    </h2>
 
       {/* Title */}
       <div className="mb-4">
@@ -112,9 +163,9 @@ const CreateNoteForm = () => {
         disabled={createMutation.isPending}
         className="rounded-lg bg-black px-5 py-3 text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {createMutation.isPending
-          ? "Creating..."
-          : "Create Note"}
+       {editingNote
+        ? "Save Changes"
+        : "Create Note"}
       </button>
     </form>
   );

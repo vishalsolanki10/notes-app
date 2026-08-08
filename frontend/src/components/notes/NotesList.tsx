@@ -1,7 +1,14 @@
 import { useNotes } from "../../hooks/use-notes";
 import NoteCard from "./NoteCard";
+import type { Note } from "../../types/note";
 
-const NotesList = () => {
+type Props = {
+    setEditingNote: (note: Note | null) => void;
+};
+
+const NotesList = ({
+  setEditingNote,
+}: Props) => {
   const {
     data,
     isLoading,
@@ -38,8 +45,9 @@ const NotesList = () => {
     <div className="mt-6 grid gap-4">
       {notes.map((note: any) => (
         <NoteCard
-          key={note.id}
-          note={note}
+        key={note.id}
+        note={note}
+        setEditingNote={setEditingNote}
         />
       ))}
     </div>
