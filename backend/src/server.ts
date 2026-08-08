@@ -4,6 +4,10 @@ dotenv.config();
 
 import app from "./app";
 
+import { initializeDatabase } from "./db/schema";
+
+initializeDatabase();
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
