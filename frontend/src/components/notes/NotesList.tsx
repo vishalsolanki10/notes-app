@@ -1,7 +1,10 @@
 import { useNotes } from "../../hooks/use-notes";
 import NoteCard from "./NoteCard";
 import type { Note } from "../../types/note";
-
+import {
+  exportNotesAsJson,
+  exportNotesAsMarkdown,
+} from "../../utils/export-notes"
 type Props = {
   search: string;
   tag: string;
@@ -74,6 +77,25 @@ const NotesList = ({
 
   return (
     <div>
+      <div className="mb-4 flex gap-3">
+        <button
+          type="button"
+          onClick={() => exportNotesAsMarkdown(notes)}
+          disabled={!notes.length}
+          className="rounded-lg bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-200 dark:text-gray-900 dark:hover:bg-white"
+        >
+          Export Markdown
+        </button>
+
+        <button
+          type="button"
+          onClick={() => exportNotesAsJson(notes)}
+          disabled={!notes.length}
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Export JSON
+        </button>
+      </div>
       {notes.map((note: Note) => (
         <NoteCard
           key={note.id}
