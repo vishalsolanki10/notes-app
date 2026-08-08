@@ -1,3 +1,4 @@
+import { log } from "node:console";
 import { db } from "../db/database";
 import { Note } from "../types/note";
 import { NoteQuery } from "../types/note-query";
@@ -78,7 +79,26 @@ export const getAllNotes = (
       );
   }
 
-  return result;
+  const page = query?.page || 1;
+  const limit = query?.limit || 10;
+
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+
+  const paginatedData = result.slice(
+    startIndex,
+    endIndex
+  );
+
+  return {
+    notes: paginatedData,
+    total: result.length,
+    page,
+    limit,
+    totalPages: Math.ceil(
+    result.length / limit
+    ),
+  };
 };
 
 export const getNoteById = (
@@ -156,4 +176,36 @@ export const deleteNote = (id: string) => {
     `
     )
     .run(id);
+};
+
+export const getAllTags = () => {
+  const notes = db
+    .prepare("SELECT tags FROM notes")
+    .all();
+
+  console.log(notes)
+  const tagMap = new Map<
+    string,
+    number
+  >();
+
+  notes.forEach((note: any) => {
+    const tags = JSON.parse(
+      note.tags || "[]"
+    );
+
+    tags.forEach((tag: string) => {
+      tagMap.set(
+        tag,
+        (tagMap.get(tag) || 0) + 1
+      );
+    });
+  });
+
+  return Array.from(
+    tagMap.entries()
+  ).map(([name, count]) => ({
+    name,
+    count,
+  }));
 };

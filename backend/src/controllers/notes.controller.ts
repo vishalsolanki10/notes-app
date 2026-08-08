@@ -7,6 +7,7 @@ import {
   createNote,
   updateNote,
   deleteNote,
+  getAllTags,
 } from "../services/notes.service";
 
 import {
@@ -18,7 +19,7 @@ export const getNotes = (
   req: Request,
   res: Response
 ) => {
-  const notes = getAllNotes({
+  const result = getAllNotes({
     search: req.query.search
       ? String(req.query.search)
       : undefined,
@@ -30,11 +31,26 @@ export const getNotes = (
     sort: req.query.sort
       ? (String(req.query.sort) as any)
       : undefined,
+
+    page: req.query.page
+      ? Number(req.query.page)
+      : 1,
+
+    limit: req.query.limit
+      ? Number(req.query.limit)
+      : 10,
   });
 
   res.status(200).json({
     success: true,
-    data: notes,
+    data: result.notes,
+
+    pagination: {
+      page: result.page,
+      limit: result.limit,
+      total: result.total,
+      totalPages: result.totalPages,
+    },
   });
 };
 
@@ -157,5 +173,17 @@ export const removeNote = (
   res.status(200).json({
     success: true,
     message: "Note deleted successfully",
+  });
+};
+
+export const getTags = (
+  req: Request,
+  res: Response
+) => {
+  const tags = getAllTags();
+
+  res.status(200).json({
+    success: true,
+    data: tags,
   });
 };
