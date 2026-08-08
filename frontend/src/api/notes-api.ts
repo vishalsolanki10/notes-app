@@ -20,3 +20,13 @@ export const createNote = async (
 
   return response.data;
 }
+
+export const deleteNote = async (
+  id: string
+) => {
+  const response = await api.delete(
+    `/notes/${id}`
+  );
+
+  return response.data;
+};
