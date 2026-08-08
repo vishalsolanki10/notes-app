@@ -3,17 +3,22 @@ import NoteCard from "./NoteCard";
 import type { Note } from "../../types/note";
 
 type Props = {
-    setEditingNote: (note: Note | null) => void;
+  search: string;
+
+  setEditingNote: (
+    note: Note | null
+  ) => void;
 };
 
 const NotesList = ({
+  search,
   setEditingNote,
 }: Props) => {
   const {
     data,
     isLoading,
     isError,
-  } = useNotes();
+  } = useNotes(search);
 
   if (isLoading) {
     return (
