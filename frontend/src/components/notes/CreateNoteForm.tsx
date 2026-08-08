@@ -17,7 +17,12 @@ const CreateNoteForm = ({
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
 
+  const [titleError, setTitleError] = useState("");
+  const [contentError, setContentError] = useState("");
+  const [tagsError, setTagsError] = useState("");
+
   const isInitialLoad = useRef(false);
+
   const [saveStatus, setSaveStatus] =
     useState<"idle" | "saving" | "saved">("idle");
 
@@ -28,6 +33,9 @@ const CreateNoteForm = ({
   const createMutation = useCreateNote();
   const updateMutation = useUpdateNote();
 
+  /*
+   * Load note data when editing.
+   */
   useEffect(() => {
     if (editingNote) {
       isInitialLoad.current = true;
@@ -36,15 +44,25 @@ const CreateNoteForm = ({
       setContent(editingNote.content);
       setTags(editingNote.tags.join(", "));
 
+      setTitleError("");
+      setContentError("");
+      setTagsError("");
       setSaveStatus("idle");
     } else {
       setTitle("");
       setContent("");
       setTags("");
+
+      setTitleError("");
+      setContentError("");
+      setTagsError("");
       setSaveStatus("idle");
     }
   }, [editingNote]);
 
+  /*
+   * Auto-save edited note.
+   */
   useEffect(() => {
     if (!editingNote) {
       return;
@@ -55,23 +73,54 @@ const CreateNoteForm = ({
       return;
     }
 
-    if (
-      !debouncedTitle.trim() &&
-      !debouncedContent.trim()
-    ) {
-      return;
-    }
+    const trimmedTitle = debouncedTitle.trim();
+    const trimmedContent = debouncedContent.trim();
 
     const tagsArray = debouncedTags
       .split(",")
       .map((tag) => tag.trim())
       .filter(Boolean);
 
+    /*
+     * Validate all fields before auto-save.
+     */
+    let hasError = false;
+
+    if (!trimmedTitle) {
+      setTitleError("Title is required.");
+      hasError = true;
+    } else {
+      setTitleError("");
+    }
+
+    if (!trimmedContent) {
+      setContentError("Content is required.");
+      hasError = true;
+    } else {
+      setContentError("");
+    }
+
+    if (!tagsArray.length) {
+      setTagsError("At least one tag is required.");
+      hasError = true;
+    } else {
+      setTagsError("");
+    }
+
+    /*
+     * Never update the note when any required
+     * field is empty.
+     */
+    if (hasError) {
+      setSaveStatus("idle");
+      return;
+    }
+
     const isUnchanged =
       debouncedTitle === editingNote.title &&
       debouncedContent === editingNote.content &&
       JSON.stringify(tagsArray) ===
-        JSON.stringify(editingNote.tags);
+      JSON.stringify(editingNote.tags);
 
     if (isUnchanged) {
       return;
@@ -83,8 +132,8 @@ const CreateNoteForm = ({
       {
         id: editingNote.id,
         payload: {
-          title: debouncedTitle,
-          content: debouncedContent,
+          title: trimmedTitle,
+          content: trimmedContent,
           tags: tagsArray,
         },
       },
@@ -101,6 +150,9 @@ const CreateNoteForm = ({
     debouncedTags,
   ]);
 
+  /*
+   * Escape key exits edit mode.
+   */
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && editingNote) {
@@ -121,6 +173,9 @@ const CreateNoteForm = ({
     };
   }, [editingNote, setEditingNote]);
 
+  /*
+   * Create new note.
+   */
   const handleSubmit = (
     e: React.FormEvent
   ) => {
@@ -130,34 +185,71 @@ const CreateNoteForm = ({
       return;
     }
 
-    if (!title.trim()) {
+    const trimmedTitle = title.trim();
+    const trimmedContent = content.trim();
+
+    const tagsArray = tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+
+    let hasError = false;
+
+    if (!trimmedTitle) {
+      setTitleError("Title is required.");
+      hasError = true;
+    } else {
+      setTitleError("");
+    }
+
+    if (!trimmedContent) {
+      setContentError("Content is required.");
+      hasError = true;
+    } else {
+      setContentError("");
+    }
+
+    if (!tagsArray.length) {
+      setTagsError("At least one tag is required.");
+      hasError = true;
+    } else {
+      setTagsError("");
+    }
+
+    if (hasError) {
       return;
     }
 
     createMutation.mutate({
-      title,
-      content,
-      tags: tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter(Boolean),
+      title: trimmedTitle,
+      content: trimmedContent,
+      tags: tagsArray,
     });
 
     setTitle("");
     setContent("");
     setTags("");
+
+    setTitleError("");
+    setContentError("");
+    setTagsError("");
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 dark:border-slate-800 dark:bg-slate-900"
+      className={`rounded-2xl border p-5 shadow-sm transition sm:p-6 ${editingNote
+          ? "border-blue-300 bg-blue-50/30 dark:border-blue-700 dark:bg-blue-950/20"
+          : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"
+        }`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-2xl">📝</span>
+            <span className="text-2xl">
+              {editingNote ? "✏️" : "📝"}
+            </span>
 
             <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl">
               {editingNote
@@ -168,7 +260,7 @@ const CreateNoteForm = ({
 
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             {editingNote
-              ? "Changes are automatically saved."
+              ? "You are editing an existing note. Changes are automatically saved."
               : "Capture your thoughts, ideas and important information."}
           </p>
         </div>
@@ -209,18 +301,33 @@ const CreateNoteForm = ({
           className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300"
         >
           Title
+          <span className="ml-1 text-red-500">*</span>
         </label>
 
         <input
           id="title"
           type="text"
           value={title}
-          onChange={(e) =>
-            setTitle(e.target.value)
-          }
+          onChange={(e) => {
+            setTitle(e.target.value);
+
+            if (e.target.value.trim()) {
+              setTitleError("");
+            }
+          }}
           placeholder="Enter note title"
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-500 dark:focus:bg-slate-800 dark:focus:ring-slate-700"
+          className={`w-full rounded-xl border bg-slate-50 p-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-800 ${titleError
+              ? "border-red-400 focus:border-red-500 focus:ring-red-100 dark:border-red-600 dark:focus:border-red-500 dark:focus:ring-red-950"
+              : "border-slate-200 focus:border-slate-400 focus:ring-slate-200 dark:border-slate-700 dark:focus:border-slate-500 dark:focus:ring-slate-700"
+            }`}
         />
+
+        {titleError && (
+          <p className="mt-2 flex items-center gap-1 text-sm font-medium text-red-600 dark:text-red-400">
+            <span>⚠</span>
+            {titleError}
+          </p>
+        )}
       </div>
 
       {/* Content */}
@@ -230,18 +337,33 @@ const CreateNoteForm = ({
           className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300"
         >
           Content
+          <span className="ml-1 text-red-500">*</span>
         </label>
 
         <textarea
           id="content"
           rows={6}
           value={content}
-          onChange={(e) =>
-            setContent(e.target.value)
-          }
+          onChange={(e) => {
+            setContent(e.target.value);
+
+            if (e.target.value.trim()) {
+              setContentError("");
+            }
+          }}
           placeholder="Write your note..."
-          className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm leading-6 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-500 dark:focus:bg-slate-800 dark:focus:ring-slate-700"
+          className={`w-full resize-y rounded-xl border bg-slate-50 p-3.5 text-sm leading-6 text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-800 ${contentError
+              ? "border-red-400 focus:border-red-500 focus:ring-red-100 dark:border-red-600 dark:focus:border-red-500 dark:focus:ring-red-950"
+              : "border-slate-200 focus:border-slate-400 focus:ring-slate-200 dark:border-slate-700 dark:focus:border-slate-500 dark:focus:ring-slate-700"
+            }`}
         />
+
+        {contentError && (
+          <p className="mt-2 flex items-center gap-1 text-sm font-medium text-red-600 dark:text-red-400">
+            <span>⚠</span>
+            {contentError}
+          </p>
+        )}
       </div>
 
       {/* Tags */}
@@ -251,22 +373,42 @@ const CreateNoteForm = ({
           className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300"
         >
           Tags
+          <span className="ml-1 text-red-500">*</span>
         </label>
 
         <input
           id="tags"
           type="text"
           value={tags}
-          onChange={(e) =>
-            setTags(e.target.value)
-          }
+          onChange={(e) => {
+            setTags(e.target.value);
+
+            if (
+              e.target.value
+                .split(",")
+                .map((tag) => tag.trim())
+                .filter(Boolean).length > 0
+            ) {
+              setTagsError("");
+            }
+          }}
           placeholder="react, frontend, typescript"
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-500 dark:focus:bg-slate-800 dark:focus:ring-slate-700"
+          className={`w-full rounded-xl border bg-slate-50 p-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-800 ${tagsError
+              ? "border-red-400 focus:border-red-500 focus:ring-red-100 dark:border-red-600 dark:focus:border-red-500 dark:focus:ring-red-950"
+              : "border-slate-200 focus:border-slate-400 focus:ring-slate-200 dark:border-slate-700 dark:focus:border-slate-500 dark:focus:ring-slate-700"
+            }`}
         />
 
-        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
-          Separate multiple tags using commas
-        </p>
+        {tagsError ? (
+          <p className="mt-2 flex items-center gap-1 text-sm font-medium text-red-600 dark:text-red-400">
+            <span>⚠</span>
+            {tagsError}
+          </p>
+        ) : (
+          <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
+            Separate multiple tags using commas
+          </p>
+        )}
       </div>
 
       {/* Actions */}
@@ -275,7 +417,7 @@ const CreateNoteForm = ({
           <button
             type="submit"
             disabled={createMutation.isPending}
-            className="rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+            className="cursor-pointer rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
           >
             {createMutation.isPending
               ? "Creating..."
@@ -287,9 +429,9 @@ const CreateNoteForm = ({
           <button
             type="button"
             onClick={() => setEditingNote(null)}
-            className="rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+            className="cursor-pointer rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
           >
-            Editing Done!
+            ✓ Editing Done!
             <br />
             Back to Create Mode
           </button>

@@ -45,7 +45,7 @@ return (
             onClick={() =>
               setEditingNote(note)
             }
-            className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            className="cursor-pointer text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
             Edit
           </button>
@@ -53,7 +53,7 @@ return (
           <button
             type="button"
             onClick={handleDelete}
-            className="text-sm font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+            className="cursor-pointer text-sm font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
           >
             Delete
           </button>

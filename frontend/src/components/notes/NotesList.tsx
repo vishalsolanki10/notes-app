@@ -94,7 +94,7 @@ const NotesList = ({
               type="button"
               onClick={() => exportNotesAsMarkdown(notes)}
               disabled={!notes.length}
-              className="rounded-lg bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-200 dark:text-gray-900 dark:hover:bg-white"
+              className="cursor-pointer rounded-lg bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-200 dark:text-gray-900 dark:hover:bg-white"
             >
               Export Markdown
             </button>
@@ -103,7 +103,7 @@ const NotesList = ({
               type="button"
               onClick={() => exportNotesAsJson(notes)}
               disabled={!notes.length}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Export JSON
             </button>
