@@ -2,12 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { getNotes } from "../api/notes-api";
 
 export const useNotes = (
-  search: string
+  search: string,
+  tag: string
 ) => {
   return useQuery({
-    queryKey: ["notes", search],
+    queryKey: [
+      "notes",
+      search,
+      tag,
+    ],
 
     queryFn: () =>
-      getNotes(search),
+      getNotes(search, tag),
   });
 };
