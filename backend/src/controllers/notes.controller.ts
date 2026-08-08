@@ -18,7 +18,19 @@ export const getNotes = (
   req: Request,
   res: Response
 ) => {
-  const notes = getAllNotes();
+  const notes = getAllNotes({
+    search: req.query.search
+      ? String(req.query.search)
+      : undefined,
+
+    tag: req.query.tag
+      ? String(req.query.tag)
+      : undefined,
+
+    sort: req.query.sort
+      ? (String(req.query.sort) as any)
+      : undefined,
+  });
 
   res.status(200).json({
     success: true,

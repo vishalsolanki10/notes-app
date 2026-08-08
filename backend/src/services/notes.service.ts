@@ -1,21 +1,84 @@
 import { db } from "../db/database";
 import { Note } from "../types/note";
+import { NoteQuery } from "../types/note-query";
 
-export const getAllNotes = () => {
+export const getAllNotes = (
+  query?: NoteQuery
+) => {
   const notes = db
     .prepare(
       `
       SELECT *
       FROM notes
-      ORDER BY updatedAt DESC
     `
     )
     .all();
 
-  return notes.map((note: any) => ({
+  let result = notes.map((note: any) => ({
     ...note,
     tags: JSON.parse(note.tags || "[]"),
   }));
+
+  // Search
+  if (query?.search) {
+    const search = query.search.toLowerCase();
+
+    result = result.filter(
+      (note: any) =>
+        note.title
+          .toLowerCase()
+          .includes(search) ||
+        note.content
+          .toLowerCase()
+          .includes(search)
+    );
+  }
+
+  // Tag Filter
+  if (query?.tag) {
+    const tag = query.tag.toLowerCase();
+
+    result = result.filter((note: any) =>
+      note.tags.some(
+        (t: string) =>
+          t.toLowerCase() === tag
+      )
+    );
+  }
+
+  // Sort
+  switch (query?.sort) {
+    case "title":
+      result.sort((a: any, b: any) =>
+        a.title.localeCompare(b.title)
+      );
+      break;
+
+    case "createdAt":
+      result.sort(
+        (a: any, b: any) =>
+          new Date(b.createdAt).getTime() -
+          new Date(a.createdAt).getTime()
+      );
+      break;
+
+    case "updatedAt":
+      result.sort(
+        (a: any, b: any) =>
+          new Date(b.updatedAt).getTime() -
+          new Date(a.updatedAt).getTime()
+      );
+      break;
+
+    default:
+      result.sort(
+        (a: any, b: any) =>
+          new Date(b.updatedAt).getTime() -
+          new Date(a.updatedAt).getTime()
+      );
+  }
+
+  return result;
 };
 
 export const getNoteById = (
