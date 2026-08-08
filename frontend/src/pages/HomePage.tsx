@@ -1,19 +1,13 @@
-import { useEffect } from "react";
-
-import { getNotes } from "../api/notes-api";
+import NotesList from "../components/notes/NotesList";
 
 const HomePage = () => {
-  useEffect(() => {
-    getNotes()
-      .then(console.log)
-      .catch(console.error);
-  }, []);
-
   return (
-    <div className="p-6">
+    <div className="mx-auto max-w-4xl p-6">
       <h1 className="text-3xl font-bold">
         Notes App
       </h1>
+
+      <NotesList />
     </div>
   );
 };
