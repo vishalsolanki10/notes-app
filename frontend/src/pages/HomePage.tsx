@@ -1,3 +1,4 @@
+import CreateNoteForm from "../components/notes/CreateNoteForm";
 import NotesList from "../components/notes/NotesList";
 
 const HomePage = () => {
@@ -6,6 +7,8 @@ const HomePage = () => {
       <h1 className="text-3xl font-bold">
         Notes App
       </h1>
+
+      <CreateNoteForm />
 
       <NotesList />
     </div>

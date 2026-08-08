@@ -5,3 +5,18 @@ export const getNotes = async () => {
 
   return response.data;
 };
+
+export const createNote = async (
+  payload: {
+    title: string;
+    content: string;
+    tags: string[];
+  }
+) => {
+  const response = await api.post(
+    "/notes",
+    payload
+  );
+
+  return response.data;
+}
