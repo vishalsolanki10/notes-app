@@ -17,7 +17,6 @@ const HomePage = () => {
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
   const [sortBy, setSortBy] = useState("");
-  const [editScrollTrigger, setEditScrollTrigger] = useState(0);
 
   const debouncedSearch = useDebounce(search);
   const { theme, toggleTheme } = useTheme();
@@ -47,7 +46,7 @@ const HomePage = () => {
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [editingNote, editScrollTrigger]);
+  }, [editingNote]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
